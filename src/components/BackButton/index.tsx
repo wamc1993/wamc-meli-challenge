@@ -16,7 +16,9 @@ const BackButton: FC<Properties> = ({ referrer, className, label }) => {
 	const locale = useLocale();
 
 	const handleBack = () => {
-		referrer && router.push(`/${locale}${referrer}`);
+		if (referrer !== undefined) {
+			router.push(`/${locale}${referrer}`);
+		}
 	};
 
 	return (

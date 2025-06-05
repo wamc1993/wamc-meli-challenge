@@ -10,6 +10,7 @@ interface Properties {
 	name: string;
 	placeholder?: string;
 	error?: FieldError;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	register: any;
 }
 

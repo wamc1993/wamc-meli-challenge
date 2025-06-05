@@ -6,7 +6,6 @@ export async function handleFormSubmission(formData: FormData) {
 	const email = formData.get("email");
 	const country = formData.get("country");
 	const address = formData.get("address");
-	const referrer = formData.get("referrer");
 	const token = formData.get("token");
 	const captchaToken = formData.get("g-recaptcha-response");
 	const jumpCaptcha = formData.get("jump-recaptcha") === "true";
