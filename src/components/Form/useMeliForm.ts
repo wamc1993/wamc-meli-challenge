@@ -9,6 +9,21 @@ interface Properties {
 	defaultValues: FormSubmitInfo;
 }
 
+const getRecaptchaToken = (jumpCaptcha: boolean): string => {
+	if (jumpCaptcha) return "simulated-token";
+	return window?.grecaptcha?.getResponse() || "";
+};
+
+const buildFormData = (data: FormInfo, jump: boolean): FormData => {
+	const formData = new FormData();
+	Object.entries(data).forEach(([key, value]) => {
+		formData.append(key, String(value));
+	});
+	formData.append("jump-recaptcha", String(jump));
+	formData.append("g-recaptcha-response", getRecaptchaToken(jump));
+	return formData;
+};
+
 const useMeliForm = ({ defaultValues }: Properties) => {
 	const [jumpCaptcha, setJumpCaptcha] = useState<boolean>(false);
 	const [generalError, setGeneralError] = useState<string | null>(null);
@@ -25,27 +40,20 @@ const useMeliForm = ({ defaultValues }: Properties) => {
 	const isDisabled = isLoading || isSubmitting;
 
 	const onSubmit = async (data: FormInfo) => {
-		const formData = new FormData();
-
-		Object.entries(data).forEach(([key, value]) => {
-			formData.append(key, String(value));
-		});
-
-		formData.append("jump-recaptcha", String(jumpCaptcha));
-
-		if (jumpCaptcha) {
-			formData.append("g-recaptcha-response", "simulated-token");
-		}
+		setGeneralError(null);
+		const formData = buildFormData(data, jumpCaptcha);
 
 		try {
 			await handleFormSubmission(formData);
-			setGeneralError(null);
 		} catch (err) {
-			if (err instanceof Error) {
-				setGeneralError(err.message);
-			} else {
-				setGeneralError("Ocurrió un error inesperado");
+			if (err instanceof Error && err.message === "NEXT_REDIRECT") {
+				return;
 			}
+			setGeneralError(
+				err instanceof Error
+					? err.message
+					: "Ocurrió un error inesperado"
+			);
 		}
 	};
 

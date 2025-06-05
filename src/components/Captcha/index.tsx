@@ -26,7 +26,7 @@ const Captcha: FC = () => {
 		script.onload = () => {
 			setTimeout(() => {
 				setIsReady(true);
-			}, 200);
+			}, 100);
 		};
 		document.body.appendChild(script);
 	}, [locale]);
@@ -42,11 +42,17 @@ const Captcha: FC = () => {
 			window.grecaptcha.render(containerRef.current, {
 				sitekey: process.env.NEXT_PUBLIC_RECAPTCHA_KEY!,
 			});
-			console.log("Captcha renderizado correctamente");
 		}
 	}, [isReady]);
 
-	return <div ref={containerRef} className="flex justify-center" />;
+	return (
+		<div
+			ref={containerRef}
+			className="flex justify-center"
+			role="region"
+			aria-label="Captcha de seguridad"
+		/>
+	);
 };
 
 export default Captcha;

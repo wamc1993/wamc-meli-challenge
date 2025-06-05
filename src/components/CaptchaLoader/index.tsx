@@ -1,4 +1,3 @@
-"use client";
 import dynamic from "next/dynamic";
 import { FC, useEffect, useRef, useState } from "react";
 
@@ -13,23 +12,24 @@ const Captcha = dynamic(() => import("@/components/Captcha"), {
 const CaptchaLoader: FC = () => {
 	const [visible, setVisible] = useState(false);
 	const ref = useRef<HTMLDivElement | null>(null);
+	const observerRef = useRef<IntersectionObserver | null>(null);
 
 	useEffect(() => {
 		if (!ref.current || visible) return;
 
-		const observer = new IntersectionObserver(
+		observerRef.current = new IntersectionObserver(
 			([entry]) => {
 				if (entry.isIntersecting) {
 					setVisible(true);
-					observer.disconnect();
+					observerRef.current?.disconnect();
 				}
 			},
-			{ threshold: 0.2 }
+			{ threshold: 0.1 }
 		);
 
-		observer.observe(ref.current);
+		observerRef.current.observe(ref.current);
 
-		return () => observer.disconnect();
+		return () => observerRef.current?.disconnect();
 	}, [visible]);
 
 	return (
@@ -42,6 +42,9 @@ const CaptchaLoader: FC = () => {
 					"opacity-100": visible,
 				}
 			)}
+			aria-busy={!visible}
+			role="region"
+			aria-label="Captcha de seguridad"
 		>
 			{visible ? <Captcha /> : <Spinner className="h-10 w-10" />}
 		</div>

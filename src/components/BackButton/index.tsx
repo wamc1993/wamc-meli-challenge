@@ -1,7 +1,7 @@
 "use client";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
-import { FC } from "react";
+import { FC, useCallback } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -15,14 +15,23 @@ const BackButton: FC<Properties> = ({ referrer, className, label }) => {
 	const router = useRouter();
 	const locale = useLocale();
 
-	const handleBack = () => {
-		if (referrer !== undefined) {
-			router.push(`/${locale}${referrer}`);
+	const handleBack = useCallback(() => {
+		if (referrer) {
+			const path = referrer.startsWith("/") ? referrer : `/${referrer}`;
+			router.push(`/${locale}${path}`);
+		} else {
+			router.back();
 		}
-	};
+	}, [referrer, router, locale]);
 
 	return (
-		<Button type="button" onClick={handleBack} className={className}>
+		<Button
+			type="button"
+			onClick={handleBack}
+			className={className}
+			aria-label={label}
+			disabled={!referrer}
+		>
 			{label}
 		</Button>
 	);

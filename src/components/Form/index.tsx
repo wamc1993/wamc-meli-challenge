@@ -90,7 +90,7 @@ const Form: FC<Properties> = ({ defaultValues, t, countries }) => {
 			/>
 
 			<CaptchaLoader />
-			<div className="h-[30px]">
+			<div className="min-h-[30px]">
 				{generalError !== null && (
 					<p className="subtitle-error">*{generalError}</p>
 				)}
@@ -105,6 +105,7 @@ const Form: FC<Properties> = ({ defaultValues, t, countries }) => {
 					type="submit"
 					className="w-full min-w-[96px]"
 					disabled={isDisabled}
+					aria-busy={isDisabled}
 				>
 					{isDisabled ? (
 						<div
