@@ -1,0 +1,66 @@
+{
+	"previous-page": {
+		"title": "Página inicial",
+		"next-link": "Continuar para a etapa de verificação",
+		"description-1": "Esta prova de conceito consiste em três etapas: esta é a primeira página, a segunda corresponde à etapa de verificação e a terceira é uma página simples de confirmação.",
+		"description-2": "Você pode acessar a etapa de verificação a partir daqui, especificando um <token>token</token> e um <referrer>referrer</referrer> no formulário.",
+		"description-3": "Para facilitar, você pode selecionar um <user>usuário de teste</user> e obter um token válido automaticamente:",
+		"token": {
+			"label": "Token do usuário",
+			"placeholder": "Digite um texto"
+		},
+		"referrer": {
+			"label": "Parâmetro referrer",
+			"placeholder": "Por exemplo, /previous-step"
+		}
+	},
+	"abuse-prevention-page": {
+		"invalid-token": {
+			"title": "Token inválido",
+			"message": "Não foi possível carregar os dados associados à sua sessão."
+		},
+		"no-access": {
+			"title": "Acesso negado",
+			"message": "Os parâmetros de acesso estão incorretos ou foram manipulados."
+		},
+		"default": {
+			"title": "Etapa de verificação",
+			"subtitle": "Bem-vindo. Por favor, revise suas informações antes de continuar.",
+			"fields": {
+				"fullName": {
+					"label": "Nome completo",
+					"placeholder": "Por exemplo, João da Silva"
+				},
+				"email": {
+					"label": "E-mail",
+					"placeholder": "Por exemplo, user@gmail.com"
+				},
+				"country": {
+					"label": "País",
+					"placeholder": "Selecione um país"
+				},
+				"address": {
+					"label": "Endereço",
+					"placeholder": "Por exemplo, Rua 12, nº 22 - 99"
+				}
+			},
+			"confirm-button": "Confirmar",
+			"back-button": "Voltar",
+			"required-error": "Este campo é obrigatório",
+			"invalid-email-error": "E-mail inválido"
+		}
+	},
+	"last-page": {
+		"title": "Obrigado por sua participação!",
+		"subtitle": "Suas informações foram enviadas com sucesso.",
+		"backHome": "Voltar ao início"
+	},
+	"countries": {
+		"AR": "Argentina",
+		"BR": "Brasil",
+		"CO": "Colômbia",
+		"MX": "México",
+		"PE": "Peru",
+		"CL": "Chile"
+	}
+}

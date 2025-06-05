@@ -1,0 +1,66 @@
+{
+	"previous-page": {
+		"title": "Página de inicio",
+		"next-link": "Continuar al paso de verificación",
+		"description-1": "Esta prueba de concepto consta de tres pasos: esta es la primera página, la segunda corresponde al paso de verificación, y la tercera es una página de confirmación simple.",
+		"description-2": "Puedes acceder al paso de verificación desde aquí, especificando un <token>token</token> y un <referrer>referrer</referrer> en el formulario.",
+		"description-3": "Para facilitarlo, puedes seleccionar un <user>usuario de prueba</user> y obtener un token válido automáticamente:",
+		"token": {
+			"label": "Token del usuario",
+			"placeholder": "Ingresa un texto"
+		},
+		"referrer": {
+			"label": "Parámetro referrer",
+			"placeholder": "Por ejm, /previous-step"
+		}
+	},
+	"abuse-prevention-page": {
+		"invalid-token": {
+			"title": "Token inválido",
+			"message": "No pudimos cargar los datos asociados a tu sesión."
+		},
+		"no-access": {
+			"title": "Acceso denegado",
+			"message": "Los parámetros de acceso son incorrectos o han sido manipulados."
+		},
+		"default": {
+			"title": "Paso de verificación",
+			"subtitle": "Bienvenido. Por favor, revisa tu información antes de continuar.",
+			"fields": {
+				"fullName": {
+					"label": "Nombre completo",
+					"placeholder": "Por ejm, Juanito Pérez"
+				},
+				"email": {
+					"label": "Correo electrónico",
+					"placeholder": "Por ejm, user@gmai"
+				},
+				"country": {
+					"label": "País",
+					"placeholder": "Selecciona un país"
+				},
+				"address": {
+					"label": "Dirección",
+					"placeholder": "Por ejm, Calle 12 # 22 - 99"
+				}
+			},
+			"confirm-button": "Confirmar",
+			"back-button": "Volver",
+			"required-error": "Este campo es obligatorio",
+			"invalid-email-error": "Correo inválido"
+		}
+	},
+	"last-page": {
+		"title": "¡Gracias por tu participación!",
+		"subtitle": "Tu información ha sido enviada correctamente.",
+		"backHome": "Volver a inicio"
+	},
+	"countries": {
+		"AR": "Argentina",
+		"BR": "Brasil",
+		"CO": "Colombia",
+		"MX": "México",
+		"PE": "Perú",
+		"CL": "Chile"
+	}
+}
