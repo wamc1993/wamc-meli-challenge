@@ -22,6 +22,13 @@ export default async function LocaleLayout({
 	return (
 		<html lang={locale}>
 			<body className={`${OpenSans.className} antialiased min-h-screen`}>
+				<noscript>
+					<div className="bg-yellow-100 text-yellow-900 p-4 text-center text-sm">
+						Este sitio requiere JavaScript para funcionar
+						correctamente. Por favor, habilítalo en tu navegador.
+					</div>
+				</noscript>
+
 				<NextIntlClientProvider>
 					<main className="min-h-screen bg-white px-4 py-6 sm:px-8">
 						<Header />
