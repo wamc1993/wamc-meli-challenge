@@ -11,9 +11,9 @@ export const metadata = {
 	openGraph: {
 		title: "POC Meli Challenge",
 		description: "Prueba de concepto técnica creada por William Montañez.",
-		url: "https://tu-dominio.com", // <-- cámbialo por tu dominio real
+		url: "https://wamc-meli-challenge.netlify.app/",
 		siteName: "POC Meli Challenge",
-		locale: "es_CO", // o "pt_BR" si estás en portugués
+		locale: "es_CO",
 		type: "website",
 	},
 	robots: {
