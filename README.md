@@ -69,7 +69,7 @@ Gracias a NextJs tenemos el control de dividir la funcionalidad de la página de
 
         -   La construcción de esta página se realiza cada vez que se solicita, debido a la validación del token y a la obtención de datos del usuario asociado.
 
-    -   El servidor toma los dos query params (`token` y `referrer`) y aplica validaciones personalizadas a estos datos:
+    -   El servidor toma los dos query params obligatorios (`token` y `referrer`) y un tercer query param opcional (`fields`) y aplica validaciones personalizadas a estos datos:
 
         -   Para el caso del `referrer`, se replicó una whitelist muy sencilla. Básicamente, se valida que el valor de `referrer` sea `/previous-page`.
         -   Para el caso del `token`, valido que el valor coincida con alguno de los usuarios de prueba. Estos usuarios son obtenidos mediante un `fetch`, lo cual impide el uso de caché para mejorar aún más el tiempo de respuesta. Sin embargo, considero que es necesario, ya que los datos del usuario pueden cambiar en cualquier momento (o incluso ser eliminados), y la página debe asegurarse de eso.
@@ -79,7 +79,14 @@ Gracias a NextJs tenemos el control de dividir la funcionalidad de la página de
 
     -   Cuando alguna validación con los query params falla, se muestran errores genéricos. Estos errores son estáticos, así que en estos casos el cliente no tiene que realizar esfuerzos adicionales para completar el renderizado de la página.
 
-    -   Si los query params pasan las validaciones y hay un usuario de prueba asociado al `token`, se envía un bundle intermedio al navegador para continuar con la creación del contenido. Además, el servidor le envía las traducciones, el listado de países y los datos del usuario.
+    -   Si se recibe el query param `fields`, se decodifica este texto para obtener un array de elementos. Cada uno de estos elementos es un campor personalizado, que será agregado al formulario, junto con los 4 campos básicos.
+
+    -   Finalmente, se define un listado de campos que se pintaran de forma dinámica en el formulario. Este listado se compondrá de 4 campos básico (Nombre, dirección, email y país), más los campos personalizados que se extrajeron del queryparam `field`.
+
+        -   Para crear este listado, se usa la información del usuario para definir los valores por defecto de cada campo básico (por ejemplo, el campo de email tendrá por defecto el email del usuario obtenido). También se usarán las traducciones para actualizar los placeholders
+        -   En el caso del campo de paises, se asocia el listado de paises como opciones del selector.
+
+    -   Si los query params pasan las validaciones y hay un usuario de prueba asociado al `token`, se envía un bundle intermedio al navegador para continuar con la creación del contenido. Además, el servidor le envía las traducciones y el listado de campos del formulario.
 
     -   A nivel de código, esta página está ubicada en `src/app/[locale]/abuse-prevention/page.tsx`.
 
@@ -123,17 +130,18 @@ Gracias a NextJs tenemos el control de dividir la funcionalidad de la página de
 
 -   **Formulario**:
 
-    -   Durante el proceso de construcción de la página `abuse-prevention`, el servidor le envía al navegador el esqueleto de la página, las traducciones, los datos del usuario y el listado de países. Con esta información, se implementa un formulario básico.
-    -   Elegí la librería `react-hook-form` para gestionar la validación del formulario.
+    -   Durante el proceso de construcción de la página `abuse-prevention`, el servidor le envía al navegador el esqueleto de la página, y un listado de campos para renderizar. Con esta información, se implementa un formulario básico.
+    -   Elegí la librería `react-hook-form` para gestionar la validación del formulario. Gracias a esta librería, podemos tomar el listado de campos, y crear de forma dinámica un formulario compuestos de N inputs.
     -   Para los inputs, opté por la librería `shadcn` en combinación con Tailwind CSS. Ambas permiten maquetar elementos con buena estética y funcionalidad en poco tiempo, lo cual es ideal para una prueba técnica.
-    -   El formulario se encuentra principalmente en `src/components/Form/index.tsx`. Desde allí se orquesta la creación de los inputs y la interacción con el usuario. La lógica de presentación está encapsulada en el hook `src/components/Form/useMeliForm.ts`.
+    -   El formulario se encuentra principalmente en `src/components/abusePrevention/Form/index.tsx`. Desde allí se orquesta la creación de los inputs y la interacción con el usuario. La lógica de presentación está encapsulada en el hook `src/components/abusePrevention/Form/useMeliForm.ts`.
+    -   El componente `src\components\abusePrevention\FormFieldTemplate\index.tsx` recibe como parámetro uno de los campos dinámicos que llegan desde el servidor. A partir del atributo _type_, se decide qué tipo de input renderizar. El atributo _default_ será el valor por defecto del input.
     -   Cabe destacar que la mayoría de textos y etiquetas del formulario están traducidos al español y al portugués, incluyendo las opciones del dropdown de países. Me faltaron algunas traducciones de errores, pero con este POC logro demostrar que el enfoque de cargar traducciones desde el server component tiene mucho sentido, ya que disminuye el número de cargas posteriores.
 
 -   **Skeleton**:
 
     -   Puede existir un breve lapso entre el envío del contenido desde el servidor y la completitud del formulario en el cliente. Para evitar una transición brusca o molesta al usuario, implementé un _Skeleton_ del formulario.
     -   En mi opinión, el skeleton no difiere demasiado de una animación de carga convencional, pero tiene la ventaja de "preparar" visualmente al usuario sobre la estructura final de la página, mientras transmite la sensación de que "estamos cargando, espéranos".
-    -   A nivel de código, esta lógica está en `src/components/FormWithSkeleton/index.tsx`, que actúa como un HOC que asocia el componente `Form` definitivo con su skeleton correspondiente (`src/components/FormSkeleton/index.tsx`).
+    -   A nivel de código, esta lógica está en `src/components/abusePrevention/FormWithSkeleton/index.tsx`, que actúa como un HOC que asocia el componente `Form` definitivo con su skeleton correspondiente (`src/components/abusePrevention/FormSkeleton/index.tsx`).
 
 -   **Captcha**:
 
@@ -152,6 +160,8 @@ Gracias a NextJs tenemos el control de dividir la funcionalidad de la página de
         -   Este POC soporta dos lenguajes: español y portugués. Este soporte incluye también al CAPTCHA (y honestamente, fue la parte más compleja de implementar, jaja).
         -   Al cambiar el idioma del sitio, el CAPTCHA también cambia. Se intentaron varias estrategias para lograr esto sin afectar el TTI, pero finalmente no fue posible evitar hacer un _hard reload_ completo. En la sección de i18n explico con más detalle lo que probé y por qué fue necesario este enfoque.
 
+    -   A nivel de código, el captche está en el componente `src\components\abusePrevention\Captcha\index.tsx`.
+
 ## 🌐 Soporte multilenguaje (i18n)
 
 Se utilizó la librería `next-intl` para que la app estuviera disponible en:
@@ -168,7 +178,7 @@ El lenguaje por defecto es el español, pero en la parte superior derecha de la 
 
     -   Inicialmente utilicé la función `router.replace` de la librería `next/navigation` para realizar un cambio óptimo de URL (internamente, Next.js determina qué cambió en la página y actualiza solo los elementos necesarios, reutilizando los demás). Este método funcionaba bien para casi todo el sitio... excepto para el CAPTCHA.
     -   Tras varios intentos, observé que al cargarse, el CAPTCHA inserta varios elementos ocultos en el DOM. Pude eliminar manualmente algunos, como la etiqueta `<script>` o el `<iframe>` que Google agrega al HTML, pero aun así, ciertos scripts y configuraciones internas del primer script cargado imposibilitaron un cambio de idioma exitoso en el CAPTCHA.
-    -   También modifiqué el `useEffect` del componente `src/components/Captcha/index.tsx` para solicitar el script de reCAPTCHA con el query param `hl=es` o `hl=pt`, según el idioma, pero nada de esto funcionó.
+    -   También modifiqué el `useEffect` del componente `src\components\abusePrevention\Captcha\index.tsx` para solicitar el script de reCAPTCHA con el query param `hl=es` o `hl=pt`, según el idioma, pero nada de esto funcionó.
     -   Ante la imposibilidad de actualizar el idioma del CAPTCHA tras un cambio dinámico de idioma, no quedó otra opción que hacer un _hard reload_ (equivalente a presionar F5) después de seleccionar un nuevo idioma. Por fortuna, esto solo ocurre al cambiar de idioma, y el primer cargue es suficientemente rápido como para que no resulte molesto.
     -   Una optimización que no implementé en este POC, pero que tendría sentido, es restringir el _hard reload_ solo a la página que contiene el CAPTCHA, y no a todas las páginas del proyecto.
 
@@ -187,6 +197,12 @@ El lenguaje por defecto es el español, pero en la parte superior derecha de la 
 -   No se confía en valores de entrada sin validarlos previamente en el servidor.
 -   Se activa Google reCAPTCHA para mitigar automatizaciones.
 -   El valor de `g-recaptcha-response` se agrega manualmente mediante `window.grecaptcha.getResponse()` para asegurar su inclusión en el formulario.
+
+## ✨ Formulario dinámico
+
+-   La página de `/abuse-prevention` recibe por query params, un listado de _campos_. Un campo se conforma de un nombre, un tipo (text, boolean, number) y un label.
+-   Este query param viene codificado, así que se descodifica. Los campos obtenidos, se pasan al componente del formulario junto con los otros campos fijos (nombre, dirección, país y correo)
+-   El formulario renderiza un input en función del atributo _type_ de cada campo
 
 ## 🧩 Estrategia No-Script
 
