@@ -5,6 +5,12 @@
 		"description-1": "Esta prueba de concepto consta de tres pasos: esta es la primera página, la segunda corresponde al paso de verificación, y la tercera es una página de confirmación simple.",
 		"description-2": "Puedes acceder al paso de verificación desde aquí, especificando un <token>token</token> y un <referrer>referrer</referrer> en el formulario.",
 		"description-3": "Para facilitarlo, puedes seleccionar un <user>usuario de prueba</user> y obtener un token válido automáticamente:",
+		"step-1": "Selecciona un usuario",
+		"step-2": "Agrega o quita campos personalizados",
+		"step-3": "Si quieres, modifica los query params",
+		"step-3-add": "Agregar campo",
+		"step-3-name": "Nombre",
+		"step-3-label": "Label",
 		"token": {
 			"label": "Token del usuario",
 			"placeholder": "Ingresa un texto"

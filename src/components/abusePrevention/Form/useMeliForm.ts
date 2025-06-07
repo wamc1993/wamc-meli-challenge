@@ -1,12 +1,25 @@
 "use client";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import z from "zod";
 
 import { handleFormSubmission } from "@/app/actions/formActions";
-import { FormInfo, FormSubmitInfo } from "@/types/form";
+import { buildSchema } from "@/lib/buildSchema";
+import { MeliField } from "@/types/form";
 
 interface Properties {
-	defaultValues: FormSubmitInfo;
+	fields: MeliField[];
+	token: string;
+	referrer: string;
+}
+
+interface BuildFormDataProps {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	data: any;
+	jumpCaptcha: boolean;
+	token: string;
+	referrer: string;
 }
 
 const getRecaptchaToken = (jumpCaptcha: boolean): string => {
@@ -14,34 +27,45 @@ const getRecaptchaToken = (jumpCaptcha: boolean): string => {
 	return window?.grecaptcha?.getResponse() || "";
 };
 
-const buildFormData = (data: FormInfo, jump: boolean): FormData => {
+const buildFormData = ({
+	data,
+	jumpCaptcha,
+	token,
+	referrer,
+}: BuildFormDataProps): FormData => {
 	const formData = new FormData();
 	Object.entries(data).forEach(([key, value]) => {
 		formData.append(key, String(value));
 	});
-	formData.append("jump-recaptcha", String(jump));
-	formData.append("g-recaptcha-response", getRecaptchaToken(jump));
+	formData.append("jump-recaptcha", String(jumpCaptcha));
+	formData.append("token", token);
+	formData.append("referrer", referrer);
+	formData.append("g-recaptcha-response", getRecaptchaToken(jumpCaptcha));
 	return formData;
 };
 
-const useMeliForm = ({ defaultValues }: Properties) => {
+const useMeliForm = ({ fields, token, referrer }: Properties) => {
 	const [jumpCaptcha, setJumpCaptcha] = useState<boolean>(false);
 	const [generalError, setGeneralError] = useState<string | null>(null);
 
+	const { schema, defaultValues } = buildSchema(fields);
+
 	const {
 		control,
-		register,
 		handleSubmit,
-		formState: { errors, isSubmitting, isLoading },
-	} = useForm<FormInfo>({
+		clearErrors,
+		formState: { isSubmitting, isLoading },
+	} = useForm<z.infer<typeof schema>>({
 		defaultValues,
+		resolver: zodResolver(schema),
 	});
 
 	const isDisabled = isLoading || isSubmitting;
 
-	const onSubmit = async (data: FormInfo) => {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const onSubmit = async (data: any) => {
 		setGeneralError(null);
-		const formData = buildFormData(data, jumpCaptcha);
+		const formData = buildFormData({ data, jumpCaptcha, token, referrer });
 
 		try {
 			await handleFormSubmission(formData);
@@ -58,12 +82,12 @@ const useMeliForm = ({ defaultValues }: Properties) => {
 	};
 
 	return {
+		schema,
 		jumpCaptcha,
 		generalError,
 		control,
 		isDisabled,
-		errors,
-		register,
+		clearErrors,
 		setJumpCaptcha,
 		onSubmit: handleSubmit(onSubmit),
 	};

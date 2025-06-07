@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
 
-import FormErrorContent from "@/components/FormErrorContent";
-import FormWithSkeleton from "@/components/FormWithSkeleton";
+import FormErrorContent from "@/components/abusePrevention/FormErrorContent";
+import FormWithSkeleton from "@/components/abusePrevention/FormWithSkeleton";
 import Stepper from "@/components/Stepper";
+import { createFormFields } from "@/lib/createFormFields";
 import { fetchCountries } from "@/lib/fetchCountries";
 import { fetchUserData } from "@/lib/fetchUserData";
 import { getAbusePreventionTranslations } from "@/lib/translations";
@@ -21,6 +22,7 @@ export default async function AbusePreventionPage({
 	const countries = await fetchCountries(t);
 	const token = params.token as string | undefined;
 	const referrer = params.referrer as string | undefined;
+	const customFields = params.fields as string | undefined;
 
 	const isValidToken = validateToken(token);
 	const isValidReferrer = validateReferrer(referrer);
@@ -46,15 +48,19 @@ export default async function AbusePreventionPage({
 				/>
 			);
 		} else {
+			const fields = createFormFields({
+				t,
+				userData,
+				countries,
+				customFields,
+			});
 			content = (
-				<>
-					<p className="mb-4">{t.default.subtitle}</p>
-					<FormWithSkeleton
-						t={t}
-						defaultValues={{ ...userData, referrer, token }}
-						countries={countries}
-					/>
-				</>
+				<FormWithSkeleton
+					t={t}
+					fields={fields}
+					token={token!}
+					referrer={referrer!}
+				/>
 			);
 		}
 	}

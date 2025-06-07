@@ -51,6 +51,12 @@ export interface PreviousPageTranslations {
 	description1: JSX.Element;
 	description2: JSX.Element;
 	description3: JSX.Element;
+	step1: string;
+	step2: string;
+	step3: string;
+	step3Add: string;
+	step3Name: string;
+	step3Label: string;
 	token: {
 		label: string;
 		placeholder: string;

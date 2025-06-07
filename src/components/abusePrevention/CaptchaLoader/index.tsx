@@ -4,7 +4,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import Spinner from "@/components/Spinner";
 
-const Captcha = dynamic(() => import("@/components/Captcha"), {
+const Captcha = dynamic(() => import("@/components/abusePrevention/Captcha"), {
 	ssr: false,
 	loading: () => <Spinner className="h-10 w-10" />,
 });

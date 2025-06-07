@@ -13,18 +13,10 @@ export const mockUsers: Record<string, MeliUserData> = {
 		country: "BR",
 		address: "Rua das Flores 45, São Paulo",
 	},
-	// ⚠️ Usuario con email faltante
-	noEmail1: {
+	qwe258: {
 		fullName: "Pedro Salazar",
-		email: "",
+		email: "pedro@gmail.com",
 		country: "CO",
 		address: "Cra. 7 #45-30, Bogotá",
-	},
-	// ⚠️ Usuario con país no soportado
-	invalidCountry: {
-		fullName: "Ricardo León",
-		email: "ricardo.leon@example.com",
-		country: "XX",
-		address: "Calle inventada 999",
 	},
 };

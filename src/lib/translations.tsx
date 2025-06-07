@@ -95,6 +95,12 @@ export async function getPreviousPageTranslations() {
 		description1,
 		description2,
 		description3,
+		step1: t("step-1"),
+		step2: t("step-2"),
+		step3: t("step-3"),
+		step3Add: t("step-3-add"),
+		step3Name: t("step-3-name"),
+		step3Label: t("step-3-label"),
 		token: {
 			label: t("token.label"),
 			placeholder: t("token.placeholder"),

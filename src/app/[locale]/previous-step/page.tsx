@@ -1,4 +1,4 @@
-import ParamsSelector from "@/components/ParamsSelector";
+import ParamsSelector from "@/components/previousPage/ParamsSelector";
 import Stepper from "@/components/Stepper";
 import { getPreviousPageTranslations } from "@/lib/translations";
 
@@ -13,7 +13,7 @@ export default async function PreviousPage() {
 				{t.description2}
 				{t.description3}
 			</div>
-			<ParamsSelector />
+			<ParamsSelector t={t} />
 		</div>
 	);
 }
